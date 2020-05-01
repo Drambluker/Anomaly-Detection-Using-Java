@@ -3,11 +3,11 @@ package ru.cma;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
-import org.example.utils.Common;
 import org.example.utils.PropertyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.cma.handlers.AnomalyServlet;
+import ru.cma.utils.CommonWithXML;
 
 public class Main {
     private static Logger log = LoggerFactory.getLogger(org.example.Main.class.getSimpleName());
@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         PropertyManager.load();
-        Common.configure();
+        CommonWithXML.configure();
         runServer();
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
