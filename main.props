@@ -14,3 +14,5 @@ log4j.appender.file.file=./log/log.log
 log4j.appender.file.datePattern=_yyyy-MM-dd
 log4j.appender.file.layout=org.apache.log4j.PatternLayout
 log4j.appender.file.layout.conversionPattern=%d{ABSOLUTE} %5p %c{1}:%M:%L - %m%n
+
+anomaly.detector.period=5000
