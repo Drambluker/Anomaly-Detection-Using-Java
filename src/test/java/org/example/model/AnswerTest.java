@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 public class AnswerTest {
 
     @Test
-    public void testAnwer() {
+    public void testAnswer() {
         Answer answer = new Answer("STATUS", null);
 
         assertEquals("STATUS", answer.getStatus());
