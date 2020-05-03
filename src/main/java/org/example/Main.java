@@ -28,10 +28,7 @@ public class Main {
         }, "Stop Jetty Hook"));
     }
 
-    private static void runServer() {
-        int port = PropertyManager.getPropertyAsInteger("server.port", 8026);
-        String contextStr = PropertyManager.getPropertyAsString("server.context", "server");
-
+    public static void runServer(int port, String contextStr) {
         server = new Server(port);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -52,7 +49,14 @@ public class Main {
         }
     }
 
-    private static void stopServer() {
+    private static void runServer() {
+        int port = PropertyManager.getPropertyAsInteger("server.port", 8026);
+        String contextStr = PropertyManager.getPropertyAsString("server.context", "server");
+
+        runServer(port, contextStr);
+    }
+
+    public static void stopServer() {
         try {
             if (server.isRunning()) {
                 server.stop();
