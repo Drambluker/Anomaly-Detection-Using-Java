@@ -62,9 +62,14 @@ public class AnomalyDetectionTaskTest {
     }
 
     @Test
+    public void testDetectionByBoxplot() {
+        anomalyDetection.detectByBoxplot(anomalyDetection.getBOXPLOT_CAPACITY());
+        assertEquals(anomalyDetection.getLastCheckedIndexesByBoxplot().get("TEST").intValue(), anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
+    }
+
+    @Test
     public void testDetectByIsolationForest() {
         anomalyDetection.detectByIsolationForest(anomalyDetection.getTRAINER_CAPACITY());
-        anomalyDetection.getLastCheckedIndexesByIF().get("TEST");
         assertEquals(anomalyDetection.getLastCheckedIndexesByIF().get("TEST").intValue(), anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
     }
 }

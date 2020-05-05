@@ -3,7 +3,6 @@ package ru.cma.utils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.cma.TransactionManager;
 import ru.cma.ml.isolationForest.Classification;
 import ru.cma.ml.isolationForest.IsolationForestTrainer;
 import ru.cma.model.Transaction;
@@ -86,50 +85,71 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     }
 
     public void detectByBoxplot(int capacity) {
-        //TODO Add implementation
+        List<Transaction> transactions;
+        int numTransactions, lastCheckedIndex;
+        double Q1, Q3, interQ, bottomLine, topLine;
+        double[] amountArray;
 
-        for(String key : transactionByAccount.keySet()) {
-            List<Transaction> transactions = transactionByAccount.get(key);
-            double median = 0;
-            double Q1, Q3, interQ, bottomLine, topLine;
-            int[] amountArray = new int[transactions.size()];
-            for (int i = 0; i < transactions.size(); i++) {
-                amountArray[i] = transactions.get(i).getAmount();
-            }
-            Arrays.sort(amountArray);
-            if (amountArray.length % 2 == 1) {
-                median = amountArray[amountArray.length / 2];
+        for (String key : transactionByAccount.keySet()) {
+            transactions = transactionByAccount.get(key);
+            numTransactions = transactions.size();
 
-            } else median = (amountArray[amountArray.length / 2-1] + amountArray[amountArray.length / 2]) / 2;
-
-            if ((amountArray.length / 2) % 2 == 1) {
-                Q1 = amountArray[amountArray.length / 4];
-                Q3=amountArray[amountArray.length/4*3+2];
-
-            } else {
-                Q1 = (amountArray[amountArray.length / 4 - 1] + amountArray[amountArray.length / 4]) / 2;
-                Q3=(amountArray[amountArray.length/4*3]+amountArray[amountArray.length/4*3+1])/2;
-            }
-            interQ=Q3-Q1;
-            topLine=1.5*(Q3-Q1)+Q3;
-            bottomLine=Q1-1.5*(Q3-Q1);
-            for(int i=0; i<amountArray.length; i++)
-            {
-                if(amountArray[i]<bottomLine&&amountArray[i]>topLine)
-                {
-                    transactions.get(i).setBoxplotWarn(true);
+            if (numTransactions >= capacity) {
+                if (lastCheckedIndexesByBoxplot.get(key) == null) {
+                    lastCheckedIndex = capacity - 1;
+                    lastCheckedIndexesByBoxplot.put(key, lastCheckedIndex);
+                } else {
+                    lastCheckedIndex = lastCheckedIndexesByBoxplot.get(key);
                 }
+
+                for (int i = lastCheckedIndex + 1; i < numTransactions; i++) {
+                    amountArray = copyTransactionsToArray(transactions, i, capacity);
+                    Arrays.sort(amountArray);
+
+                    if ((amountArray.length / 2) % 2 == 1) {
+                        Q1 = amountArray[amountArray.length / 4];
+                        Q3 = amountArray[amountArray.length / 4 * 3 + 1];
+
+                    } else {
+                        Q1 = (amountArray[amountArray.length / 4 - 1] + amountArray[amountArray.length / 4]) / 2;
+                        Q3 = (amountArray[amountArray.length / 4 * 3] + amountArray[amountArray.length / 4 * 3 + 1]) / 2;
+                    }
+
+                    interQ = Q3 - Q1;
+                    topLine = 1.5 * interQ + Q3;
+                    bottomLine = Q1 - 1.5 * interQ;
+
+                    classifyTransactionByBoxplot(transactions.get(i), bottomLine, topLine);
+                }
+
+                lastCheckedIndexesByBoxplot.put(key, numTransactions - 1);
             }
-
-
         }
-        //transactionByAccount.get
+    }
+
+    private double[] copyTransactionsToArray(@NotNull List<Transaction> transactions, int index, int capacity) {
+        double[] amountArray = new double[capacity];
+
+        for (int i = 0, j = index - capacity; i < capacity; i++, j++) {
+            amountArray[i] = transactions.get(j).getAmount();
+        }
+
+        return amountArray;
+    }
+
+    private void classifyTransactionByBoxplot(@NotNull Transaction transaction, double bottomLine, double topLine) {
+        double amount = transaction.getAmount();
+
+        if (amount < bottomLine || amount > topLine) {
+            transaction.setBoxplotWarn(true);
+        } else {
+            transaction.setBoxplotWarn(false);
+        }
     }
 
     public void detectByIsolationForest(int capacity) {
         List<Transaction> transactions;
-        int numTransactions;
-        int lastCheckedIndex;
+        int numTransactions, lastCheckedIndex;
 
         for (String key : transactionByAccount.keySet()) {
             transactions = transactionByAccount.get(key);
@@ -137,7 +157,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
 
             if (numTransactions >= capacity) {
                 if (lastCheckedIndexesByIF.get(key) == null) {
-                    lastCheckedIndex = TRAINER_CAPACITY - 1;
+                    lastCheckedIndex = capacity - 1;
                     lastCheckedIndexesByIF.put(key, lastCheckedIndex);
                 } else {
                     lastCheckedIndex = lastCheckedIndexesByIF.get(key);
