@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.TimerTask;
 import java.util.Arrays;
 
+import static ru.cma.utils.Statistic.getQ1;
+import static ru.cma.utils.Statistic.getQ3;
+
 public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     private static Logger log = LoggerFactory.getLogger(AnomalyDetectionTask.class.getSimpleName());
     private final int BOXPLOT_CAPACITY;
@@ -26,7 +29,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         this.transactionByAccount = transactionByAccount;
 
         //TODO Pick value
-        BOXPLOT_CAPACITY = 10;
+        BOXPLOT_CAPACITY = 7;
 
         TRAINER_CAPACITY = 250;
         lastCheckedIndexesByBoxplot = new HashMap<>();
@@ -87,7 +90,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     public void detectByBoxplot(int capacity) {
         List<Transaction> transactions;
         int numTransactions, lastCheckedIndex;
-        double Q1, Q3, interQ, bottomLine, topLine;
+        double q1, q3, interQ, bottomLine, topLine;
         double[] amountArray;
 
         for (String key : transactionByAccount.keySet()) {
@@ -105,20 +108,11 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
                 for (int i = lastCheckedIndex + 1; i < numTransactions; i++) {
                     amountArray = copyTransactionsToArray(transactions, i, capacity);
                     Arrays.sort(amountArray);
-
-                    if ((amountArray.length / 2) % 2 == 1) {
-                        Q1 = amountArray[amountArray.length / 4];
-                        Q3 = amountArray[amountArray.length / 4 * 3 + 1];
-
-                    } else {
-                        Q1 = (amountArray[amountArray.length / 4 - 1] + amountArray[amountArray.length / 4]) / 2;
-                        Q3 = (amountArray[amountArray.length / 4 * 3] + amountArray[amountArray.length / 4 * 3 + 1]) / 2;
-                    }
-
-                    interQ = Q3 - Q1;
-                    topLine = 1.5 * interQ + Q3;
-                    bottomLine = Q1 - 1.5 * interQ;
-
+                    q1 = getQ1(amountArray);
+                    q3 = getQ3(amountArray);
+                    interQ = q3 - q1;
+                    topLine = 1.5 * interQ + q3;
+                    bottomLine = q1 - 1.5 * interQ;
                     classifyTransactionByBoxplot(transactions.get(i), bottomLine, topLine);
                 }
 
