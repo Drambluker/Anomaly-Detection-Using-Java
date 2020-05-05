@@ -22,8 +22,13 @@ public class TransactionManager {
             transactionByAccount.put(transaction.getAccount(), new ArrayList<>());
             transactionByAccount.get(transaction.getAccount()).add(transaction);
         } else transactionByAccount.get(transaction.getAccount()).add(transaction);
-
-
     }
 
+    public HashMap<String, List<Transaction>> getTransactionByAccount() {
+        return transactionByAccount;
+    }
+
+    public HashMap<String, List<Transaction>> getTransactionByDate() {
+        return transactionByDate;
+    }
 }
