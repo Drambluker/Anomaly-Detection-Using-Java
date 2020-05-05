@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Transaction {
     String date;
     String account;
-    Integer amount;
+    Double amount;
     boolean anomaly = false;
 
     @Expose(serialize = false)
@@ -37,11 +37,11 @@ public class Transaction {
     }
 
     @XmlElement
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
