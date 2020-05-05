@@ -4,19 +4,17 @@ import com.google.gson.annotations.Expose;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 public class Transaction {
     String date;
     String account;
     Double amount;
-    boolean anomaly = false;
 
-    @Expose(serialize = false)
-    boolean isolationForestWarn = false;
-
-    @Expose(serialize = false)
-    boolean boxplotWarn = false;
+    private transient boolean isolationForestWarn = false;
+    private transient boolean boxplotWarn = false;
+    private transient boolean anomaly = false;
 
     @XmlElement
     public String getDate() {
@@ -54,13 +52,15 @@ public class Transaction {
         this.anomaly = anomaly;
     }
 
-    public void setIsolationForestWarn(boolean isolationForestWarn) {
-        this.isolationForestWarn = isolationForestWarn;
+    @XmlTransient
+    public void setBoxplotWarn(boolean boxplotWarn) {
+        this.boxplotWarn = boxplotWarn;
         updateAnomalyFlag();
     }
 
-    public void setBoxplotWarn(boolean boxplotWarn) {
-        this.boxplotWarn = boxplotWarn;
+    @XmlTransient
+    public void setIsolationForestWarn(boolean isolationForestWarn) {
+        this.isolationForestWarn = isolationForestWarn;
         updateAnomalyFlag();
     }
 
