@@ -31,6 +31,7 @@ public class IsolationForestTrainer {
         atts.add(new Attribute("class", classVal));
 
         dataset = new Instances("TrainingInstances", atts, DEFAULT_CAPACITY);
+        dataset.setClassIndex(1);
     }
 
     public IsolationForestTrainer(int capacity) {
@@ -45,6 +46,7 @@ public class IsolationForestTrainer {
         atts.add(new Attribute("class", classVal));
 
         dataset = new Instances("TrainingInstances", atts, capacity);
+        dataset.setClassIndex(1);
     }
 
     public IsolationForestTrainer(String outputFile) {
@@ -59,6 +61,7 @@ public class IsolationForestTrainer {
         atts.add(new Attribute("class", classVal));
 
         dataset = new Instances("TrainingInstances", atts, DEFAULT_CAPACITY);
+        dataset.setClassIndex(1);
     }
 
     public IsolationForestTrainer(String outputFile, int capacity) {
@@ -73,6 +76,7 @@ public class IsolationForestTrainer {
         atts.add(new Attribute("class", classVal));
 
         dataset = new Instances("TrainingInstances", atts, capacity);
+        dataset.setClassIndex(1);
     }
 
     public IsolationForestTrainer(Instances dataset) {
@@ -94,17 +98,14 @@ public class IsolationForestTrainer {
         instanceValue[0] = data;
         instanceValue[1] = classVal.ordinal();
         dataset.add(new DenseInstance(1.0, instanceValue));
-        dataset.setClassIndex(1);
     }
 
     public void addTrainingInstances(Instance instance) {
         dataset.add(instance);
-        dataset.setClassIndex(1);
     }
 
     public void addTrainingInstances(Collection<? extends Instance> instances) {
         dataset.addAll(instances);
-        dataset.setClassIndex(1);
     }
 
     public void trainModel() throws Exception {
