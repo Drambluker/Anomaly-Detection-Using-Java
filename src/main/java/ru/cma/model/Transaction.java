@@ -1,7 +1,5 @@
 package ru.cma.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
