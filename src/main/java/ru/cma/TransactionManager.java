@@ -3,32 +3,37 @@ package ru.cma;
 import ru.cma.model.Transaction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TransactionManager {
     List<Transaction> transactionHistory = new ArrayList<>();
-    HashMap<String, List<Transaction>> transactionByDate = new HashMap<>();
-    HashMap<String, List<Transaction>> transactionByAccount = new HashMap<>();
+    Map<String, List<Transaction>> transactionByDate = new ConcurrentHashMap<>();
+    Map<String, List<Transaction>> transactionByAccount = new ConcurrentHashMap<>();
 
     public void addTransaction(Transaction transaction) {
         transactionHistory.add(transaction);
+
         if (transactionByDate.get(transaction.getDate()) == null) {
-            transactionByDate.put(transaction.getDate(), new ArrayList<>());
-            transactionByDate.get(transaction.getDate()).add(transaction);
-        } else transactionByDate.get(transaction.getDate()).add(transaction);
+            transactionByDate.put(transaction.getDate(), new CopyOnWriteArrayList<>());
+        }
+
+        transactionByDate.get(transaction.getDate()).add(transaction);
 
         if (transactionByAccount.get(transaction.getAccount()) == null) {
-            transactionByAccount.put(transaction.getAccount(), new ArrayList<>());
-            transactionByAccount.get(transaction.getAccount()).add(transaction);
-        } else transactionByAccount.get(transaction.getAccount()).add(transaction);
+            transactionByAccount.put(transaction.getAccount(), new CopyOnWriteArrayList<>());
+        }
+
+        transactionByAccount.get(transaction.getAccount()).add(transaction);
     }
 
-    public HashMap<String, List<Transaction>> getTransactionByAccount() {
+    public Map<String, List<Transaction>> getTransactionByAccount() {
         return transactionByAccount;
     }
 
-    public HashMap<String, List<Transaction>> getTransactionByDate() {
+    public Map<String, List<Transaction>> getTransactionByDate() {
         return transactionByDate;
     }
 }

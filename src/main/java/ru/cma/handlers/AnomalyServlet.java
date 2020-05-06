@@ -60,7 +60,7 @@ public class AnomalyServlet extends HttpServlet {
             report.setTransactions(manager.getTransactionByDate().get(request.getParameter("date")));
             response.setStatus(HttpServletResponse.SC_OK);
         } else if (request.getParameter("date") == null && request.getParameter("account") != null) {
-            report.setTransactions(manager.getTransactionByAccount().get(request.getParameter("acсount")));
+            report.setTransactions(manager.getTransactionByAccount().get(request.getParameter("account")));
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

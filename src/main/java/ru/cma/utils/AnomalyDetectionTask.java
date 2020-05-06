@@ -7,10 +7,7 @@ import ru.cma.ml.isolationForest.Classification;
 import ru.cma.ml.isolationForest.IsolationForestTrainer;
 import ru.cma.model.Transaction;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.TimerTask;
-import java.util.Arrays;
+import java.util.*;
 
 import static ru.cma.utils.Statistic.getQ1;
 import static ru.cma.utils.Statistic.getQ3;
@@ -21,12 +18,12 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     public final int BOXPLOT_CAPACITY;
     public final int TRAINER_CAPACITY;
 
-    HashMap<String, List<Transaction>> transactionByAccount;
-    HashMap<String, Integer> lastCheckedIndexesByBoxplot;
-    HashMap<String, Integer> lastCheckedIndexesByIF;
+    Map<String, List<Transaction>> transactionByAccount;
+    Map<String, Integer> lastCheckedIndexesByBoxplot;
+    Map<String, Integer> lastCheckedIndexesByIF;
     IsolationForestTrainer trainer;
 
-    public AnomalyDetectionTask(@NotNull HashMap<String, List<Transaction>> transactionByAccount) {
+    public AnomalyDetectionTask(@NotNull Map<String, List<Transaction>> transactionByAccount) {
         this.transactionByAccount = transactionByAccount;
         BOXPLOT_CAPACITY = 100;
         TRAINER_CAPACITY = 250;
@@ -34,7 +31,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         lastCheckedIndexesByIF = new HashMap<>();
     }
 
-    public AnomalyDetectionTask(@NotNull HashMap<String, List<Transaction>> transactionByAccount, int boxPlotCapacity) {
+    public AnomalyDetectionTask(@NotNull Map<String, List<Transaction>> transactionByAccount, int boxPlotCapacity) {
         this.transactionByAccount = transactionByAccount;
         BOXPLOT_CAPACITY = boxPlotCapacity;
         TRAINER_CAPACITY = 250;
@@ -42,7 +39,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         lastCheckedIndexesByIF = new HashMap<>();
     }
 
-    public AnomalyDetectionTask(@NotNull HashMap<String, List<Transaction>> transactionByAccount, int boxPlotCapacity, int trainerCapacity) {
+    public AnomalyDetectionTask(@NotNull Map<String, List<Transaction>> transactionByAccount, int boxPlotCapacity, int trainerCapacity) {
         this.transactionByAccount = transactionByAccount;
         BOXPLOT_CAPACITY = boxPlotCapacity;
         TRAINER_CAPACITY = trainerCapacity;
@@ -50,15 +47,15 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         lastCheckedIndexesByIF = new HashMap<>();
     }
 
-    public HashMap<String, List<Transaction>> getTransactionByAccount() {
+    public Map<String, List<Transaction>> getTransactionByAccount() {
         return transactionByAccount;
     }
 
-    public HashMap<String, Integer> getLastCheckedIndexesByBoxplot() {
+    public Map<String, Integer> getLastCheckedIndexesByBoxplot() {
         return lastCheckedIndexesByBoxplot;
     }
 
-    public HashMap<String, Integer> getLastCheckedIndexesByIF() {
+    public Map<String, Integer> getLastCheckedIndexesByIF() {
         return lastCheckedIndexesByIF;
     }
 
