@@ -11,7 +11,7 @@ public class Transaction {
     Double amount;
 
     private transient boolean isolationForestWarn = false;
-    private transient boolean boxplotWarn = false;
+    private transient boolean boxPlotWarn = false;
     private transient boolean anomaly = false;
 
     @XmlElement
@@ -51,9 +51,13 @@ public class Transaction {
     }
 
     @XmlTransient
-    public void setBoxplotWarn(boolean boxplotWarn) {
-        this.boxplotWarn = boxplotWarn;
+    public void setBoxPlotWarn(boolean boxPlotWarn) {
+        this.boxPlotWarn = boxPlotWarn;
         updateAnomalyFlag();
+    }
+
+    public boolean isBoxPlotWarn() {
+        return boxPlotWarn;
     }
 
     @XmlTransient
@@ -62,8 +66,12 @@ public class Transaction {
         updateAnomalyFlag();
     }
 
+    public boolean isIsolationForestWarn() {
+        return isolationForestWarn;
+    }
+
     private void updateAnomalyFlag() {
-        if (boxplotWarn && isolationForestWarn) {
+        if (boxPlotWarn && isolationForestWarn) {
             anomaly = true;
         } else {
             anomaly = false;

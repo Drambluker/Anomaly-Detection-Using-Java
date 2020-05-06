@@ -17,8 +17,9 @@ import static ru.cma.utils.Statistic.getQ3;
 
 public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     private static Logger log = LoggerFactory.getLogger(AnomalyDetectionTask.class.getSimpleName());
-    private final int BOXPLOT_CAPACITY;
-    private final int TRAINER_CAPACITY;
+
+    public final int BOXPLOT_CAPACITY;
+    public final int TRAINER_CAPACITY;
 
     HashMap<String, List<Transaction>> transactionByAccount;
     HashMap<String, Integer> lastCheckedIndexesByBoxplot;
@@ -27,10 +28,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
 
     public AnomalyDetectionTask(@NotNull HashMap<String, List<Transaction>> transactionByAccount) {
         this.transactionByAccount = transactionByAccount;
-
-        //TODO Pick value
-        BOXPLOT_CAPACITY = 7;
-
+        BOXPLOT_CAPACITY = 100;
         TRAINER_CAPACITY = 250;
         lastCheckedIndexesByBoxplot = new HashMap<>();
         lastCheckedIndexesByIF = new HashMap<>();
@@ -52,14 +50,6 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         lastCheckedIndexesByIF = new HashMap<>();
     }
 
-    public int getBOXPLOT_CAPACITY() {
-        return BOXPLOT_CAPACITY;
-    }
-
-    public int getTRAINER_CAPACITY() {
-        return TRAINER_CAPACITY;
-    }
-
     public HashMap<String, List<Transaction>> getTransactionByAccount() {
         return transactionByAccount;
     }
@@ -70,10 +60,6 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
 
     public HashMap<String, Integer> getLastCheckedIndexesByIF() {
         return lastCheckedIndexesByIF;
-    }
-
-    public void setTransactionByAccount(HashMap<String, List<Transaction>> transactionByAccount) {
-        this.transactionByAccount = transactionByAccount;
     }
 
     @Override
@@ -135,9 +121,9 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         double amount = transaction.getAmount();
 
         if (amount < bottomLine || amount > topLine) {
-            transaction.setBoxplotWarn(true);
+            transaction.setBoxPlotWarn(true);
         } else {
-            transaction.setBoxplotWarn(false);
+            transaction.setBoxPlotWarn(false);
         }
     }
 
