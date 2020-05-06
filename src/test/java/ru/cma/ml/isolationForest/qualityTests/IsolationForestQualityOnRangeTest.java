@@ -100,11 +100,9 @@ public class IsolationForestQualityOnRangeTest {
         trainer.addTrainingInstances(trainingInstances);
         trainer.trainModel();
         Evaluation eval = trainer.testModel();
-        StringBuilder sb = new StringBuilder();
-        sb.append("TEST ON RANGE ").append(start).append("-").append(end).append("\n");
-        sb.append("Correct: ").append(eval.correct()).append(" (").append(eval.pctCorrect()).append("%)\n");
-        sb.append("Incorrect: ").append(eval.incorrect()).append(" (").append(eval.pctIncorrect()).append("%)\n");
-        System.out.println(sb.toString());
+        StringBuilder title = new StringBuilder();
+        title.append("TEST ON RANGE ").append(start).append("-").append(end);
+        printSummary(title.toString(), eval);
     }
 
     @Test
@@ -112,9 +110,13 @@ public class IsolationForestQualityOnRangeTest {
         trainer = new IsolationForestTrainer(dataset);
         trainer.trainModel();
         Evaluation eval = trainer.testModel();
+        printSummary("TEST ON FULL RANGE", eval);
+    }
+
+    private void printSummary(String title, Evaluation eval) {
         StringBuilder sb = new StringBuilder();
-        sb.append("TEST ON FULL RANGE\n");
-        sb.append("Correct: ").append(eval.correct()).append(" (").append(eval.pctCorrect()).append("%)\n");
+        sb.append(title);
+        sb.append("\nCorrect: ").append(eval.correct()).append(" (").append(eval.pctCorrect()).append("%)\n");
         sb.append("Incorrect: ").append(eval.incorrect()).append(" (").append(eval.pctIncorrect()).append("%)\n");
         System.out.println(sb.toString());
     }
