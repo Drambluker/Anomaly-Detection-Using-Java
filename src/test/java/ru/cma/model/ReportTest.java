@@ -8,19 +8,17 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class ReportTest {
-
     @Test
-    public void reportTest(){
-        Report report=new Report();
-        List<Transaction> transactions=new ArrayList<>();
-        Transaction trnsctn=new Transaction();
+    public void reportTest() {
+        Report report = new Report();
+        List<Transaction> transactions = new ArrayList<>();
+        Transaction trnsctn = new Transaction();
         trnsctn.setAmount(103.5);
         trnsctn.setAccount("cma");
         trnsctn.setDate("07.05.2020");
         transactions.add(trnsctn);
 
         report.setTransactions(transactions);
-        assertEquals(transactions.isEmpty(), false);
+        assertEquals(report.getTransactions().isEmpty(), false);
     }
-
 }
