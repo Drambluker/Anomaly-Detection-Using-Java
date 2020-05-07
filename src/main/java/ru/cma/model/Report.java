@@ -6,14 +6,14 @@ import java.util.List;
 
 @XmlRootElement
 public class Report {
-    List<Transaction> transactions;
+  List<Transaction> transactions;
 
-    @XmlElement(name = "transaction")
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
+  @XmlElement(name = "transaction")
+  public List<Transaction> getTransactions() {
+    return transactions;
+  }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
+  public void setTransactions(List<Transaction> transactions) {
+    this.transactions = transactions;
+  }
 }

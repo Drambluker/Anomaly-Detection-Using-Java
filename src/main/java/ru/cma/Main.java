@@ -11,76 +11,79 @@ import ru.cma.handlers.AnomalyServlet;
 import ru.cma.utils.CommonWithXML;
 
 public class Main {
-    private static Logger log = LoggerFactory.getLogger(org.example.Main.class.getSimpleName());
+  private static Logger log = LoggerFactory.getLogger(org.example.Main.class.getSimpleName());
 
-    private static Server server;
+  private static Server server;
 
-    public static void main(String[] args) throws Exception {
-        PropertyManager.load();
-        CommonWithXML.configure();
-        runServer();
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
+  public static void main(String[] args) throws Exception {
+    PropertyManager.load();
+    CommonWithXML.configure();
+    runServer();
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                new Runnable() {
+                  @Override
+                  public void run() {
 
-                stopServer();
+                    stopServer();
+                  }
+                },
+                "Stop Jetty Hook"));
+  }
 
-            }
-        }, "Stop Jetty Hook"));
+  private static void runServer() {
+    int port = PropertyManager.getPropertyAsInteger("server.port", 8026);
+    String contextStr = PropertyManager.getPropertyAsString("server.context", "server");
+
+    server = new Server(port);
+
+    ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    context.setContextPath(contextStr);
+    server.setHandler(context);
+
+    ServletHandler handler = new ServletHandler();
+    server.setHandler(handler);
+
+    handler.addServletWithMapping(AnomalyServlet.class, "/anomaly");
+
+    try {
+      server.start();
+      log.error("Server has started at port: " + port);
+      // server.join();
+    } catch (Throwable t) {
+      log.error("Error while starting server", t);
     }
+  }
 
-    private static void runServer() {
-        int port = PropertyManager.getPropertyAsInteger("server.port", 8026);
-        String contextStr = PropertyManager.getPropertyAsString("server.context", "server");
+  public static void runServer(int port, String contextStr) {
+    server = new Server(port);
 
-        server = new Server(port);
+    ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    context.setContextPath(contextStr);
+    server.setHandler(context);
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath(contextStr);
-        server.setHandler(context);
+    ServletHandler handler = new ServletHandler();
+    server.setHandler(handler);
 
-        ServletHandler handler = new ServletHandler();
-        server.setHandler(handler);
+    handler.addServletWithMapping(MainServlet.class, "/anomaly");
 
-        handler.addServletWithMapping(AnomalyServlet.class, "/anomaly");
-
-        try {
-            server.start();
-            log.error("Server has started at port: " + port);
-            //server.join();
-        } catch (Throwable t) {
-            log.error("Error while starting server", t);
-        }
+    try {
+      server.start();
+      log.error("Server has started at port: " + port);
+      // server.join();
+    } catch (Throwable t) {
+      log.error("Error while starting server", t);
     }
+  }
 
-    public static void runServer(int port, String contextStr) {
-        server = new Server(port);
-
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath(contextStr);
-        server.setHandler(context);
-
-        ServletHandler handler = new ServletHandler();
-        server.setHandler(handler);
-
-        handler.addServletWithMapping(MainServlet.class, "/anomaly");
-
-        try {
-            server.start();
-            log.error("Server has started at port: " + port);
-            //server.join();
-        } catch (Throwable t) {
-            log.error("Error while starting server", t);
-        }
+  public static void stopServer() {
+    try {
+      if (server.isRunning()) {
+        server.stop();
+      }
+    } catch (Exception e) {
+      log.error("Error while stopping server", e);
     }
-
-    public static void stopServer() {
-        try {
-            if (server.isRunning()) {
-                server.stop();
-            }
-        } catch (Exception e) {
-            log.error("Error while stopping server", e);
-        }
-    }
+  }
 }
