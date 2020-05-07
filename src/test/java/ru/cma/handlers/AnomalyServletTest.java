@@ -8,36 +8,28 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.example.Main;
 import org.example.model.Answer;
-import org.example.model.Request;
-import org.example.utils.Common;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.cma.Main;
 import ru.cma.model.Transaction;
 import ru.cma.utils.CommonWithXML;
 
 public class AnomalyServletTest {
-
-    private String url;
-
     @Before
     public void init() {
-
-            Main.runServer(8026, "/");
-        }
+        Main.runServer(8026, "/");
+    }
 
     @Test
     public void doGet() throws Exception {
-
         String url = "http://localhost:8026/anomaly?date=07.05.2000";
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(url);
 
         HttpResponse response = client.execute(request);
         org.junit.Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-
     }
 
     @Test
@@ -51,17 +43,17 @@ public class AnomalyServletTest {
         trnsctn.setAccount("CMA");
         trnsctn.setAmount(103.5);
 
-        StringEntity entity = new StringEntity(Common.getPrettyGson().toJson(trnsctn));
+        StringEntity entity = new StringEntity(CommonWithXML.getPrettyGson().toJson(trnsctn));
         request.setEntity(entity);
 
         HttpResponse response = client.execute(request);
 
         HttpEntity resp = response.getEntity();
-        String respStr = IOUtils.toString(resp.getContent());
+        String respStr = IOUtils.toString(resp.getContent(), "UTF-8");
 
-        Answer a = Common.getPrettyGson().fromJson(respStr, Answer.class);
+        Answer a = CommonWithXML.getPrettyGson().fromJson(respStr, Answer.class);
 
-       org.junit.Assert.assertEquals("OK", a.getStatus());
+        org.junit.Assert.assertEquals("OK", a.getStatus());
     }
 
     @After

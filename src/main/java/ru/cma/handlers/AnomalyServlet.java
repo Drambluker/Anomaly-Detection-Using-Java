@@ -37,7 +37,7 @@ public class AnomalyServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String reqStr = IOUtils.toString(req.getInputStream());
+        String reqStr = IOUtils.toString(req.getInputStream(), "UTF-8");
         Transaction transaction = CommonWithXML.getPrettyGson().fromJson(reqStr, Transaction.class);
         manager.addTransaction(transaction);
         if (StringUtils.isBlank(reqStr) ||
