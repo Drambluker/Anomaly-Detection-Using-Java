@@ -1,16 +1,16 @@
 package ru.cma.utils;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimerTask;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.cma.ml.isolationForest.Classification;
 import ru.cma.ml.isolationForest.IsolationForestTrainer;
 import ru.cma.model.Transaction;
-
-import java.util.*;
-
-import static ru.cma.utils.Statistic.getQ1;
-import static ru.cma.utils.Statistic.getQ3;
 
 public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
   private static Logger log = LoggerFactory.getLogger(AnomalyDetectionTask.class.getSimpleName());
@@ -95,8 +95,8 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         for (int i = lastCheckedIndex + 1; i < numTransactions; i++) {
           amountArray = copyTransactionsToArray(transactions, i, capacity);
           Arrays.sort(amountArray);
-          q1 = getQ1(amountArray);
-          q3 = getQ3(amountArray);
+          q1 = Statistic.getQ1(amountArray);
+          q3 = Statistic.getQ3(amountArray);
           interQ = q3 - q1;
           topLine = 1.5 * interQ + q3;
           bottomLine = q1 - 1.5 * interQ;

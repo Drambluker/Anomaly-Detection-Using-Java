@@ -2,19 +2,16 @@ package ru.cma.utils;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.annotations.SerializedName;
-import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Test;
-import ru.cma.model.Transaction;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import org.jetbrains.annotations.NotNull;
+import org.junit.Before;
+import org.junit.Test;
+import ru.cma.model.Transaction;
 
 public class AnomalyDetectionTaskTest {
   private static class Data {
@@ -57,10 +54,10 @@ public class AnomalyDetectionTaskTest {
     printAnomalySummary(transactions);
     printNormalSummary(transactions);
 
-    assertEquals(
+    org.junit.Assert.assertEquals(
         anomalyDetection.getLastCheckedIndexesByBoxplot().get("TEST").intValue(),
         anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
-    assertEquals(
+    org.junit.Assert.assertEquals(
         anomalyDetection.getLastCheckedIndexesByIF().get("TEST").intValue(),
         anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
   }
@@ -127,7 +124,7 @@ public class AnomalyDetectionTaskTest {
     printBoxplotAnomalySummary(transactions);
     printBoxplotNormalSummary(transactions);
 
-    assertEquals(
+    org.junit.Assert.assertEquals(
         anomalyDetection.getLastCheckedIndexesByBoxplot().get("TEST").intValue(),
         anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
   }
@@ -194,7 +191,7 @@ public class AnomalyDetectionTaskTest {
     printIsolationForestAnomalySummary(transactions);
     printIsolationForestNormalSummary(transactions);
 
-    assertEquals(
+    org.junit.Assert.assertEquals(
         anomalyDetection.getLastCheckedIndexesByIF().get("TEST").intValue(),
         anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
   }

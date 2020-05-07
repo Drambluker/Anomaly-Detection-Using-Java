@@ -1,11 +1,8 @@
 package ru.cma.model;
 
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class ReportTest {
   @Test
@@ -19,6 +16,6 @@ public class ReportTest {
     transactions.add(trnsctn);
 
     report.setTransactions(transactions);
-    assertEquals(report.getTransactions().isEmpty(), false);
+    org.junit.Assert.assertEquals(report.getTransactions().isEmpty(), false);
   }
 }

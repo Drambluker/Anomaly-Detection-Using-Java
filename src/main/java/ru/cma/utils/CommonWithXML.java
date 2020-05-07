@@ -1,13 +1,12 @@
 package ru.cma.utils;
 
-import org.example.utils.Common;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
+import org.example.utils.Common;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommonWithXML extends Common {
   private static Logger log = LoggerFactory.getLogger(CommonWithXML.class);

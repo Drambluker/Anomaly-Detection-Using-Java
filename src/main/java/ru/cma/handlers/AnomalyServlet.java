@@ -1,25 +1,21 @@
 package ru.cma.handlers;
 
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Timer;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.example.model.Answer;
-
 import org.example.utils.PropertyManager;
 import ru.cma.TransactionManager;
-import ru.cma.utils.AnomalyDetectionTask;
-import ru.cma.model.Transaction;
-import ru.cma.utils.CommonWithXML;
 import ru.cma.model.Report;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Timer;
-
-import static java.util.Objects.isNull;
+import ru.cma.model.Transaction;
+import ru.cma.utils.AnomalyDetectionTask;
+import ru.cma.utils.CommonWithXML;
 
 public class AnomalyServlet extends HttpServlet {
   TransactionManager manager = new TransactionManager();
@@ -36,16 +32,15 @@ public class AnomalyServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String reqStr = IOUtils.toString(req.getInputStream(), "UTF-8");
     Transaction transaction = CommonWithXML.getPrettyGson().fromJson(reqStr, Transaction.class);
     manager.addTransaction(transaction);
 
     if (StringUtils.isBlank(reqStr)
-        || isNull(transaction.getDate())
-        || isNull(transaction.getAccount())
-        || isNull(transaction.getAmount())) {
+        || Objects.isNull(transaction.getDate())
+        || Objects.isNull(transaction.getAccount())
+        || Objects.isNull(transaction.getAmount())) {
       resp.setContentType("application/json");
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       resp.getWriter().println(CommonWithXML.getPrettyGson().toJson(new Answer("BAD", null)));

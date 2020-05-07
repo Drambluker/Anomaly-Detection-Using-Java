@@ -1,12 +1,15 @@
 package ru.cma.ml.isolationForest;
 
-import weka.classifiers.Evaluation;
-import weka.classifiers.misc.IsolationForest;
-import weka.core.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
+import weka.classifiers.Evaluation;
+import weka.classifiers.misc.IsolationForest;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.SerializationHelper;
 
 public class IsolationForestTrainer {
   private final int DEFAULT_CAPACITY = 10;

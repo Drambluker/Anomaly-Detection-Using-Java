@@ -1,5 +1,6 @@
 package ru.cma.ml.isolationForest.qualityTests;
 
+import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import ru.cma.ml.isolationForest.IsolationForestTrainer;
@@ -7,8 +8,6 @@ import weka.classifiers.Evaluation;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
-
-import java.util.ArrayList;
 
 public class IsolationForestQualityOnRangeTest {
   Instances dataset;

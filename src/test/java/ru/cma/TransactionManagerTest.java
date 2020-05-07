@@ -3,8 +3,6 @@ package ru.cma;
 import org.junit.Test;
 import ru.cma.model.Transaction;
 
-import static org.junit.Assert.*;
-
 public class TransactionManagerTest {
   @Test
   public void transactionManagerTest() {
@@ -15,8 +13,8 @@ public class TransactionManagerTest {
     tr.setAmount(103.5);
 
     trM.addTransaction(tr);
-    assertEquals(trM.getTransactionByAccount().isEmpty(), false);
-    assertEquals(trM.getTransactionByDate().isEmpty(), false);
-    assertEquals(trM.getTransactionHistory().isEmpty(), false);
+    org.junit.Assert.assertEquals(trM.getTransactionByAccount().isEmpty(), false);
+    org.junit.Assert.assertEquals(trM.getTransactionByDate().isEmpty(), false);
+    org.junit.Assert.assertEquals(trM.getTransactionHistory().isEmpty(), false);
   }
 }
