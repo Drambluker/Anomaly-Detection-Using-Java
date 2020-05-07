@@ -36,4 +36,8 @@ public class TransactionManager {
     public Map<String, List<Transaction>> getTransactionByDate() {
         return transactionByDate;
     }
+
+    public List<Transaction> getTransactionHistory() {
+        return transactionHistory;
+    }
 }
