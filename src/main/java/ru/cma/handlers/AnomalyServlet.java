@@ -18,7 +18,7 @@ import ru.cma.utils.AnomalyDetectionTask;
 import ru.cma.utils.CommonWithXML;
 
 public class AnomalyServlet extends HttpServlet {
-  TransactionManager manager = new TransactionManager();
+ public static TransactionManager manager = new TransactionManager();
 
   @Override
   public void init() throws ServletException {
@@ -52,23 +52,5 @@ public class AnomalyServlet extends HttpServlet {
     resp.getWriter().println(CommonWithXML.getPrettyGson().toJson(new Answer("OK", null)));
   }
 
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    Report report = new Report();
 
-    if (request.getParameter("date") != null && request.getParameter("account") == null) {
-      report.setTransactions(manager.getTransactionByDate().get(request.getParameter("date")));
-      response.setStatus(HttpServletResponse.SC_OK);
-    } else if (request.getParameter("date") == null && request.getParameter("account") != null) {
-      report.setTransactions(
-          manager.getTransactionByAccount().get(request.getParameter("account")));
-      response.setStatus(HttpServletResponse.SC_OK);
-    } else {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    }
-
-    response.setContentType("application/xml");
-    response.getWriter().println(CommonWithXML.toFormattedXmlOrNull(report));
-  }
 }
