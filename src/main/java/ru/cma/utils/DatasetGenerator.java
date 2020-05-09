@@ -8,15 +8,15 @@ public class DatasetGenerator {
   static Random random = new Random(2020);
 
   public static void main(String[] args) throws IOException {
-    sampleGeneration(10000);
+    generateSamples(10000);
   }
 
-  static void sampleGeneration(int size) throws IOException {
-    uniformDistribution(size);
-    normalDistribution(size);
+  static void generateSamples(int size) throws IOException {
+    genUniformDistCSV(size);
+    genNormalDistCSV(size);
   }
 
-  static void uniformDistribution(int size) throws IOException {
+  static void genUniformDistCSV(int size) throws IOException {
     FileWriter writer = new FileWriter("src\\main\\resources\\uniformDistribution.csv", false);
     writer.write("Date,Account,Amount,Class" + System.getProperty("line.separator"));
 
@@ -29,7 +29,7 @@ public class DatasetGenerator {
                     + ","
                     + "JMeter"
                     + ","
-                    + String.valueOf(random.nextDouble() * 10000)
+                    + random.nextDouble() * 10000
                     + ","
                     + "ANOMALY"
                     + System.getProperty("line.separator"));
@@ -39,7 +39,7 @@ public class DatasetGenerator {
                     + ","
                     + "JMeter"
                     + ","
-                    + String.valueOf(random.nextDouble() * 100)
+                    + random.nextDouble() * 100
                     + ","
                     + "NORMAL"
                     + System.getProperty("line.separator"));
@@ -50,7 +50,7 @@ public class DatasetGenerator {
                   + ","
                   + "JMeter"
                   + ","
-                  + String.valueOf(random.nextDouble() * 100)
+                  + random.nextDouble() * 100
                   + ","
                   + "NORMAL"
                   + System.getProperty("line.separator"));
@@ -61,7 +61,7 @@ public class DatasetGenerator {
                 + ","
                 + "JMeter"
                 + ","
-                + String.valueOf(random.nextDouble() * 100)
+                + random.nextDouble() * 100
                 + ","
                 + "NORMAL"
                 + System.getProperty("line.separator"));
@@ -72,7 +72,7 @@ public class DatasetGenerator {
     writer.close();
   }
 
-  static void normalDistribution(int size) throws IOException {
+  static void genNormalDistCSV(int size) throws IOException {
     FileWriter writer = new FileWriter("src\\main\\resources\\normalDistribution.csv", false);
     writer.write("Date,Account,Amount,Class" + System.getProperty("line.separator"));
 
@@ -85,7 +85,7 @@ public class DatasetGenerator {
                     + ","
                     + "JMeter"
                     + ","
-                    + String.valueOf(random.nextGaussian() * 10000)
+                    + random.nextGaussian() * 10000
                     + ","
                     + "ANOMALY"
                     + System.getProperty("line.separator"));
@@ -95,7 +95,7 @@ public class DatasetGenerator {
                     + ","
                     + "JMeter"
                     + ","
-                    + String.valueOf(random.nextGaussian() * 100)
+                    + random.nextGaussian() * 100
                     + ","
                     + "NORMAL"
                     + System.getProperty("line.separator"));
@@ -106,7 +106,7 @@ public class DatasetGenerator {
                   + ","
                   + "JMeter"
                   + ","
-                  + String.valueOf(random.nextGaussian() * 100)
+                  + random.nextGaussian() * 100
                   + ","
                   + "NORMAL"
                   + System.getProperty("line.separator"));
@@ -117,7 +117,7 @@ public class DatasetGenerator {
                 + ","
                 + "JMeter"
                 + ","
-                + String.valueOf(random.nextGaussian() * 100)
+                + random.nextGaussian() * 100
                 + ","
                 + "NORMAL"
                 + System.getProperty("line.separator"));
