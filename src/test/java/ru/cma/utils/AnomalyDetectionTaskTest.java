@@ -22,44 +22,80 @@ public class AnomalyDetectionTaskTest {
     String classVal;
   }
 
-  List<Data> dataset;
-  HashMap<String, List<Transaction>> transactionsByAccount;
+  List<Data> normalDataset;
+  List<Data> uniformDataset;
+  HashMap<String, List<Transaction>> normalTransactionsByAccount;
+  HashMap<String, List<Transaction>> uniformTransactionsByAccount;
 
   @Before
   public void init() throws FileNotFoundException {
-    transactionsByAccount = new HashMap<>();
+    normalTransactionsByAccount = new HashMap<>();
+    uniformTransactionsByAccount = new HashMap<>();
     List<Transaction> transactions = new ArrayList<>();
     Type listOfDataObj = new TypeToken<ArrayList<Data>>() {}.getType();
-    dataset =
-        CommonWithXML.getPrettyGson()
-            .fromJson(new FileReader("datasets/creditcard.json"), listOfDataObj);
 
-    for (Data data : dataset) {
+    normalDataset =
+        CommonWithXML.getPrettyGson()
+            .fromJson(new FileReader("datasets/normalDistribution.json"), listOfDataObj);
+
+    for (Data data : normalDataset) {
       Transaction transaction = new Transaction();
-      transaction.setAccount("TEST");
+      transaction.setAccount("NORMAL");
       transaction.setAmount(data.amount);
       transactions.add(transaction);
     }
 
-    transactionsByAccount.put("TEST", transactions);
+    normalTransactionsByAccount.put("NORMAL", transactions);
+
+    transactions = new ArrayList<>();
+    uniformDataset =
+        CommonWithXML.getPrettyGson()
+            .fromJson(new FileReader("datasets/uniformDistribution.json"), listOfDataObj);
+
+    for (Data data : uniformDataset) {
+      Transaction transaction = new Transaction();
+      transaction.setAccount("UNIFORM");
+      transaction.setAmount(data.amount);
+      transactions.add(transaction);
+    }
+
+    uniformTransactionsByAccount.put("UNIFORM", transactions);
   }
 
   @Test
-  public void testDetect() {
-    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(transactionsByAccount);
+  public void testDetectNormal() {
+    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(normalTransactionsByAccount);
     anomalyDetection.detect();
-    List<Transaction> transactions = anomalyDetection.getTransactionByAccount().get("TEST");
+    List<Transaction> transactions = anomalyDetection.getTransactionsByAccount().get("NORMAL");
 
     printGeneralSummary(transactions);
     printAnomalySummary(transactions);
     printNormalSummary(transactions);
 
     org.junit.Assert.assertEquals(
-        anomalyDetection.getLastCheckedIndexesByBoxplot().get("TEST").intValue(),
-        anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
+        anomalyDetection.getLastCheckedIndexesByBoxplot().get("NORMAL").intValue(),
+        anomalyDetection.getTransactionsByAccount().get("NORMAL").size() - 1);
     org.junit.Assert.assertEquals(
-        anomalyDetection.getLastCheckedIndexesByIF().get("TEST").intValue(),
-        anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
+        anomalyDetection.getLastCheckedIndexesByIF().get("NORMAL").intValue(),
+        anomalyDetection.getTransactionsByAccount().get("NORMAL").size() - 1);
+  }
+
+  @Test
+  public void testDetectUniform() {
+    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(uniformTransactionsByAccount);
+    anomalyDetection.detect();
+    List<Transaction> transactions = anomalyDetection.getTransactionsByAccount().get("UNIFORM");
+
+    printGeneralSummary(transactions);
+    printAnomalySummary(transactions);
+    printNormalSummary(transactions);
+
+    org.junit.Assert.assertEquals(
+        anomalyDetection.getLastCheckedIndexesByBoxplot().get("UNIFORM").intValue(),
+        anomalyDetection.getTransactionsByAccount().get("UNIFORM").size() - 1);
+    org.junit.Assert.assertEquals(
+        anomalyDetection.getLastCheckedIndexesByIF().get("UNIFORM").intValue(),
+        anomalyDetection.getTransactionsByAccount().get("UNIFORM").size() - 1);
   }
 
   private void printGeneralSummary(@NotNull List<Transaction> transactions) {
@@ -68,7 +104,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < numTransactions; i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (transaction.isAnomaly() && data.classVal.equals("ANOMALY")
           || !transaction.isAnomaly() && data.classVal.equals("NORMAL")) {
@@ -86,7 +122,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (transaction.isAnomaly() && data.classVal.equals("ANOMALY")) {
         correct++;
@@ -103,7 +139,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (!transaction.isAnomaly() && data.classVal.equals("NORMAL")) {
         correct++;
@@ -115,18 +151,33 @@ public class AnomalyDetectionTaskTest {
   }
 
   @Test
-  public void testDetectByBoxplot() {
-    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(transactionsByAccount);
+  public void testDetectNormalByBoxplot() {
+    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(normalTransactionsByAccount);
     anomalyDetection.detectByBoxplot(anomalyDetection.BOXPLOT_CAPACITY);
-    List<Transaction> transactions = anomalyDetection.getTransactionByAccount().get("TEST");
+    List<Transaction> transactions = anomalyDetection.getTransactionsByAccount().get("NORMAL");
 
     printBoxplotGeneralSummary(transactions);
     printBoxplotAnomalySummary(transactions);
     printBoxplotNormalSummary(transactions);
 
     org.junit.Assert.assertEquals(
-        anomalyDetection.getLastCheckedIndexesByBoxplot().get("TEST").intValue(),
-        anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
+        anomalyDetection.getLastCheckedIndexesByBoxplot().get("NORMAL").intValue(),
+        anomalyDetection.getTransactionsByAccount().get("NORMAL").size() - 1);
+  }
+
+  @Test
+  public void testDetectUniformByBoxplot() {
+    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(uniformTransactionsByAccount);
+    anomalyDetection.detectByBoxplot(anomalyDetection.BOXPLOT_CAPACITY);
+    List<Transaction> transactions = anomalyDetection.getTransactionsByAccount().get("UNIFORM");
+
+    printBoxplotGeneralSummary(transactions);
+    printBoxplotAnomalySummary(transactions);
+    printBoxplotNormalSummary(transactions);
+
+    org.junit.Assert.assertEquals(
+        anomalyDetection.getLastCheckedIndexesByBoxplot().get("UNIFORM").intValue(),
+        anomalyDetection.getTransactionsByAccount().get("UNIFORM").size() - 1);
   }
 
   private void printBoxplotGeneralSummary(@NotNull List<Transaction> transactions) {
@@ -135,7 +186,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < numTransactions; i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (transaction.isBoxPlotWarn() && data.classVal.equals("ANOMALY")
           || !transaction.isBoxPlotWarn() && data.classVal.equals("NORMAL")) {
@@ -153,7 +204,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (transaction.isBoxPlotWarn() && data.classVal.equals("ANOMALY")) {
         correct++;
@@ -170,7 +221,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (!transaction.isBoxPlotWarn() && data.classVal.equals("NORMAL")) {
         correct++;
@@ -182,18 +233,33 @@ public class AnomalyDetectionTaskTest {
   }
 
   @Test
-  public void testDetectByIsolationForest() {
-    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(transactionsByAccount);
+  public void testDetectNormalByIsolationForest() {
+    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(normalTransactionsByAccount);
     anomalyDetection.detectByIsolationForest(anomalyDetection.TRAINER_CAPACITY);
-    List<Transaction> transactions = anomalyDetection.getTransactionByAccount().get("TEST");
+    List<Transaction> transactions = anomalyDetection.getTransactionsByAccount().get("NORMAL");
 
     printIsolationForestGeneralSummary(transactions);
     printIsolationForestAnomalySummary(transactions);
     printIsolationForestNormalSummary(transactions);
 
     org.junit.Assert.assertEquals(
-        anomalyDetection.getLastCheckedIndexesByIF().get("TEST").intValue(),
-        anomalyDetection.getTransactionByAccount().get("TEST").size() - 1);
+        anomalyDetection.getLastCheckedIndexesByIF().get("NORMAL").intValue(),
+        anomalyDetection.getTransactionsByAccount().get("NORMAL").size() - 1);
+  }
+
+  @Test
+  public void testDetectUniformByIsolationForest() {
+    AnomalyDetectionTask anomalyDetection = new AnomalyDetectionTask(uniformTransactionsByAccount);
+    anomalyDetection.detectByIsolationForest(anomalyDetection.TRAINER_CAPACITY);
+    List<Transaction> transactions = anomalyDetection.getTransactionsByAccount().get("UNIFORM");
+
+    printIsolationForestGeneralSummary(transactions);
+    printIsolationForestAnomalySummary(transactions);
+    printIsolationForestNormalSummary(transactions);
+
+    org.junit.Assert.assertEquals(
+        anomalyDetection.getLastCheckedIndexesByIF().get("UNIFORM").intValue(),
+        anomalyDetection.getTransactionsByAccount().get("UNIFORM").size() - 1);
   }
 
   private void printIsolationForestGeneralSummary(@NotNull List<Transaction> transactions) {
@@ -202,7 +268,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < numTransactions; i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (transaction.isIsolationForestWarn() && data.classVal.equals("ANOMALY")
           || !transaction.isIsolationForestWarn() && data.classVal.equals("NORMAL")) {
@@ -220,7 +286,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (transaction.isIsolationForestWarn() && data.classVal.equals("ANOMALY")) {
         correct++;
@@ -237,7 +303,7 @@ public class AnomalyDetectionTaskTest {
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
-      Data data = dataset.get(i);
+      Data data = normalDataset.get(i);
 
       if (!transaction.isIsolationForestWarn() && data.classVal.equals("NORMAL")) {
         correct++;
@@ -251,8 +317,8 @@ public class AnomalyDetectionTaskTest {
   private int getNumClassVal(String classVal) {
     int num = 0;
 
-    for (int i = 0; i < dataset.size(); i++) {
-      if (dataset.get(i).classVal.equals(classVal)) {
+    for (int i = 0; i < normalDataset.size(); i++) {
+      if (normalDataset.get(i).classVal.equals(classVal)) {
         num++;
       }
     }

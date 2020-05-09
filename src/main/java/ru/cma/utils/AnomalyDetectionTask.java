@@ -25,8 +25,8 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
 
   public AnomalyDetectionTask(@NotNull Map<String, List<Transaction>> transactionsByAccount) {
     this.transactionsByAccount = transactionsByAccount;
-    BOXPLOT_CAPACITY = 100; // TODO Pick value
-    TRAINER_CAPACITY = 250; // TODO Pick value
+    BOXPLOT_CAPACITY = 20;
+    TRAINER_CAPACITY = 20;
     lastCheckedIndexesByBoxplot = new HashMap<>();
     lastCheckedIndexesByIF = new HashMap<>();
   }
@@ -35,7 +35,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
       @NotNull Map<String, List<Transaction>> transactionsByAccount, int boxPlotCapacity) {
     this.transactionsByAccount = transactionsByAccount;
     BOXPLOT_CAPACITY = boxPlotCapacity;
-    TRAINER_CAPACITY = 250; // TODO Pick value
+    TRAINER_CAPACITY = 20;
     lastCheckedIndexesByBoxplot = new HashMap<>();
     lastCheckedIndexesByIF = new HashMap<>();
   }
@@ -128,7 +128,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     double[] amountArray = new double[capacity];
     Transaction transaction;
 
-    for (int i = 0, j = index - capacity; i < capacity && j < index; j++) {
+    for (int i = 0, j = index - 1; i < capacity && j >= 0; j--) {
       transaction = transactions.get(j);
 
       if (!transaction.isAnomaly()
