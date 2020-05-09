@@ -18,41 +18,41 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
   public final int BOXPLOT_CAPACITY;
   public final int TRAINER_CAPACITY;
 
-  Map<String, List<Transaction>> transactionByAccount;
+  Map<String, List<Transaction>> transactionsByAccount;
   Map<String, Integer> lastCheckedIndexesByBoxplot;
   Map<String, Integer> lastCheckedIndexesByIF;
   IsolationForestTrainer trainer;
 
-  public AnomalyDetectionTask(@NotNull Map<String, List<Transaction>> transactionByAccount) {
-    this.transactionByAccount = transactionByAccount;
-    BOXPLOT_CAPACITY = 100;
-    TRAINER_CAPACITY = 250;
+  public AnomalyDetectionTask(@NotNull Map<String, List<Transaction>> transactionsByAccount) {
+    this.transactionsByAccount = transactionsByAccount;
+    BOXPLOT_CAPACITY = 100; // TODO Pick value
+    TRAINER_CAPACITY = 250; // TODO Pick value
     lastCheckedIndexesByBoxplot = new HashMap<>();
     lastCheckedIndexesByIF = new HashMap<>();
   }
 
   public AnomalyDetectionTask(
-      @NotNull Map<String, List<Transaction>> transactionByAccount, int boxPlotCapacity) {
-    this.transactionByAccount = transactionByAccount;
+      @NotNull Map<String, List<Transaction>> transactionsByAccount, int boxPlotCapacity) {
+    this.transactionsByAccount = transactionsByAccount;
     BOXPLOT_CAPACITY = boxPlotCapacity;
-    TRAINER_CAPACITY = 250;
+    TRAINER_CAPACITY = 250; // TODO Pick value
     lastCheckedIndexesByBoxplot = new HashMap<>();
     lastCheckedIndexesByIF = new HashMap<>();
   }
 
   public AnomalyDetectionTask(
-      @NotNull Map<String, List<Transaction>> transactionByAccount,
+      @NotNull Map<String, List<Transaction>> transactionsByAccount,
       int boxPlotCapacity,
       int trainerCapacity) {
-    this.transactionByAccount = transactionByAccount;
+    this.transactionsByAccount = transactionsByAccount;
     BOXPLOT_CAPACITY = boxPlotCapacity;
     TRAINER_CAPACITY = trainerCapacity;
     lastCheckedIndexesByBoxplot = new HashMap<>();
     lastCheckedIndexesByIF = new HashMap<>();
   }
 
-  public Map<String, List<Transaction>> getTransactionByAccount() {
-    return transactionByAccount;
+  public Map<String, List<Transaction>> getTransactionsByAccount() {
+    return transactionsByAccount;
   }
 
   public Map<String, Integer> getLastCheckedIndexesByBoxplot() {
@@ -76,15 +76,16 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
 
   public void detectByBoxplot(int capacity) {
     List<Transaction> transactions;
-    int numTransactions, lastCheckedIndex;
+    int numNormalTransactions, numTransactions, lastCheckedIndex;
     double q1, q3, interQ, bottomLine, topLine;
     double[] amountArray;
 
-    for (String key : transactionByAccount.keySet()) {
-      transactions = transactionByAccount.get(key);
+    for (String key : transactionsByAccount.keySet()) {
+      transactions = transactionsByAccount.get(key);
+      numNormalTransactions = getNumNormalTransactions(transactions);
       numTransactions = transactions.size();
 
-      if (numTransactions >= capacity) {
+      if (numNormalTransactions >= capacity) {
         if (lastCheckedIndexesByBoxplot.get(key) == null) {
           lastCheckedIndex = capacity - 1;
           lastCheckedIndexesByBoxplot.put(key, lastCheckedIndex);
@@ -93,7 +94,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         }
 
         for (int i = lastCheckedIndex + 1; i < numTransactions; i++) {
-          amountArray = copyTransactionsToArray(transactions, i, capacity);
+          amountArray = copyNormalTransactionsToArray(transactions, i, capacity);
           Arrays.sort(amountArray);
           q1 = Statistic.getQ1(amountArray);
           q3 = Statistic.getQ3(amountArray);
@@ -108,12 +109,34 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     }
   }
 
-  private double[] copyTransactionsToArray(
+  private int getNumNormalTransactions(@NotNull List<Transaction> transactions) {
+    int numNormalTransactions = 0;
+
+    for (Transaction transaction : transactions) {
+      if (!transaction.isAnomaly()
+          && !transaction.isIsolationForestWarn()
+          && !transaction.isBoxPlotWarn()) {
+        numNormalTransactions++;
+      }
+    }
+
+    return numNormalTransactions;
+  }
+
+  private double[] copyNormalTransactionsToArray(
       @NotNull List<Transaction> transactions, int index, int capacity) {
     double[] amountArray = new double[capacity];
+    Transaction transaction;
 
-    for (int i = 0, j = index - capacity; i < capacity; i++, j++) {
-      amountArray[i] = transactions.get(j).getAmount();
+    for (int i = 0, j = index - capacity; i < capacity && j < index; j++) {
+      transaction = transactions.get(j);
+
+      if (!transaction.isAnomaly()
+          && !transaction.isIsolationForestWarn()
+          && !transaction.isBoxPlotWarn()) {
+        amountArray[i] = transaction.getAmount();
+        i++;
+      }
     }
 
     return amountArray;
@@ -134,8 +157,8 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     List<Transaction> transactions;
     int numTransactions, lastCheckedIndex;
 
-    for (String key : transactionByAccount.keySet()) {
-      transactions = transactionByAccount.get(key);
+    for (String key : transactionsByAccount.keySet()) {
+      transactions = transactionsByAccount.get(key);
       numTransactions = transactions.size();
 
       if (numTransactions >= capacity) {
