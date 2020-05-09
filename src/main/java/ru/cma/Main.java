@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import ru.cma.handlers.AnomalyServlet;
 import ru.cma.handlers.ReportServlet;
 import ru.cma.utils.CommonWithXML;
-import ru.cma.utils.DatasetGenerator;
 
 public class Main {
   private static Logger log = LoggerFactory.getLogger(org.example.Main.class.getSimpleName());
@@ -21,17 +20,7 @@ public class Main {
     PropertyManager.load();
     CommonWithXML.configure();
     runServer();
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-
-                    stopServer();
-                  }
-                },
-                "Stop Jetty Hook"));
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> stopServer(), "Stop Jetty Hook"));
   }
 
   private static void runServer() {

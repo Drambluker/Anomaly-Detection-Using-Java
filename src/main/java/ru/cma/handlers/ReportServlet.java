@@ -1,14 +1,13 @@
 package ru.cma.handlers;
 
-import ru.cma.TransactionManager;
-import ru.cma.model.Report;
-import ru.cma.utils.CommonWithXML;
-
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import ru.cma.TransactionManager;
+import ru.cma.model.Report;
+import ru.cma.utils.CommonWithXML;
 
 public class ReportServlet extends HttpServlet {
   TransactionManager manager = AnomalyServlet.manager;

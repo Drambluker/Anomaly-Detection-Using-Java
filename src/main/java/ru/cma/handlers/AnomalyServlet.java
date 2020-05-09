@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.example.model.Answer;
 import org.example.utils.PropertyManager;
 import ru.cma.TransactionManager;
-import ru.cma.model.Report;
 import ru.cma.model.Transaction;
 import ru.cma.utils.AnomalyDetectionTask;
 import ru.cma.utils.CommonWithXML;
