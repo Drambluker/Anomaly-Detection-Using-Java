@@ -18,7 +18,7 @@ import ru.cma.utils.AnomalyDetectionTask;
 import ru.cma.utils.CommonWithXML;
 
 public class AnomalyServlet extends HttpServlet {
- public static TransactionManager manager = new TransactionManager();
+  public static TransactionManager manager = new TransactionManager();
 
   @Override
   public void init() throws ServletException {
@@ -51,6 +51,4 @@ public class AnomalyServlet extends HttpServlet {
     resp.setStatus(HttpServletResponse.SC_OK);
     resp.getWriter().println(CommonWithXML.getPrettyGson().toJson(new Answer("OK", null)));
   }
-
-
 }

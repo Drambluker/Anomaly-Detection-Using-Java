@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import ru.cma.handlers.AnomalyServlet;
 import ru.cma.handlers.ReportServlet;
 import ru.cma.utils.CommonWithXML;
+import ru.cma.utils.DatasetGenerator;
 
 public class Main {
   private static Logger log = LoggerFactory.getLogger(org.example.Main.class.getSimpleName());
@@ -46,9 +47,9 @@ public class Main {
     ServletHandler handler = new ServletHandler();
     server.setHandler(handler);
 
-    handler.addServletWithMapping(AnomalyServlet.class,  "/anomaly");
+    handler.addServletWithMapping(AnomalyServlet.class, "/anomaly");
     handler.addServletWithMapping(ReportServlet.class, "/report");
-    
+
     try {
       server.start();
       log.error("Server has started at port: " + port);

@@ -11,24 +11,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ReportServlet extends HttpServlet {
-    TransactionManager manager=AnomalyServlet.manager;
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Report report = new Report();
+  TransactionManager manager = AnomalyServlet.manager;
 
-        if (request.getParameter("date") != null && request.getParameter("account") == null) {
-            report.setTransactions(manager.getTransactionByDate().get(request.getParameter("date")));
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else if (request.getParameter("date") == null && request.getParameter("account") != null) {
-            report.setTransactions(
-                    manager.getTransactionByAccount().get(request.getParameter("account")));
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    Report report = new Report();
 
-        response.setContentType("application/xml");
-        response.getWriter().println(CommonWithXML.toFormattedXmlOrNull(report));
+    if (request.getParameter("date") != null && request.getParameter("account") == null) {
+      report.setTransactions(manager.getTransactionByDate().get(request.getParameter("date")));
+      response.setStatus(HttpServletResponse.SC_OK);
+    } else if (request.getParameter("date") == null && request.getParameter("account") != null) {
+      report.setTransactions(
+          manager.getTransactionByAccount().get(request.getParameter("account")));
+      response.setStatus(HttpServletResponse.SC_OK);
+    } else {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
+
+    response.setContentType("application/xml");
+    response.getWriter().println(CommonWithXML.toFormattedXmlOrNull(report));
+  }
 }
