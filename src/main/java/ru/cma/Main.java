@@ -26,26 +26,7 @@ public class Main {
   private static void runServer() {
     int port = PropertyManager.getPropertyAsInteger("server.port", 8026);
     String contextStr = PropertyManager.getPropertyAsString("server.context", "server");
-
-    server = new Server(port);
-
-    ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-    context.setContextPath(contextStr);
-    server.setHandler(context);
-
-    ServletHandler handler = new ServletHandler();
-    server.setHandler(handler);
-
-    handler.addServletWithMapping(AnomalyServlet.class, "/anomaly");
-    handler.addServletWithMapping(ReportServlet.class, "/report");
-
-    try {
-      server.start();
-      log.error("Server has started at port: " + port);
-      // server.join();
-    } catch (Throwable t) {
-      log.error("Error while starting server", t);
-    }
+    runServer(port, contextStr);
   }
 
   public static void runServer(int port, String contextStr) {
@@ -59,6 +40,7 @@ public class Main {
     server.setHandler(handler);
 
     handler.addServletWithMapping(MainServlet.class, "/anomaly");
+    handler.addServletWithMapping(ReportServlet.class, "/report");
 
     try {
       server.start();

@@ -94,7 +94,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
         }
 
         for (int i = lastCheckedIndex + 1; i < numTransactions; i++) {
-          amountArray = copyNormalTransactionsToArray(transactions, i, capacity);
+          amountArray = getNormalTransactionsArray(transactions, i, capacity);
           Arrays.sort(amountArray);
           q1 = Statistic.getQ1(amountArray);
           q3 = Statistic.getQ3(amountArray);
@@ -123,7 +123,7 @@ public class AnomalyDetectionTask extends TimerTask implements AnomalyDetector {
     return numNormalTransactions;
   }
 
-  private double[] copyNormalTransactionsToArray(
+  private double[] getNormalTransactionsArray(
       @NotNull List<Transaction> transactions, int index, int capacity) {
     double[] amountArray = new double[capacity];
     Transaction transaction;

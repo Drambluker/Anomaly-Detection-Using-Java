@@ -118,7 +118,7 @@ public class AnomalyDetectionTaskTest {
 
   private void printAnomalySummary(@NotNull List<Transaction> transactions) {
     int correct = 0, incorrect;
-    int numAnomaly = getNumClassVal("ANOMALY");
+    int numAnomaly = getNumClassValInDataset("ANOMALY");
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
@@ -135,7 +135,7 @@ public class AnomalyDetectionTaskTest {
 
   private void printNormalSummary(@NotNull List<Transaction> transactions) {
     int correct = 0, incorrect;
-    int numNormal = getNumClassVal("NORMAL");
+    int numNormal = getNumClassValInDataset("NORMAL");
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
@@ -200,7 +200,7 @@ public class AnomalyDetectionTaskTest {
 
   private void printBoxplotAnomalySummary(@NotNull List<Transaction> transactions) {
     int correct = 0, incorrect;
-    int numAnomaly = getNumClassVal("ANOMALY");
+    int numAnomaly = getNumClassValInDataset("ANOMALY");
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
@@ -217,7 +217,7 @@ public class AnomalyDetectionTaskTest {
 
   private void printBoxplotNormalSummary(@NotNull List<Transaction> transactions) {
     int correct = 0, incorrect;
-    int numNormal = getNumClassVal("NORMAL");
+    int numNormal = getNumClassValInDataset("NORMAL");
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
@@ -282,7 +282,7 @@ public class AnomalyDetectionTaskTest {
 
   private void printIsolationForestAnomalySummary(@NotNull List<Transaction> transactions) {
     int correct = 0, incorrect;
-    int numAnomaly = getNumClassVal("ANOMALY");
+    int numAnomaly = getNumClassValInDataset("ANOMALY");
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
@@ -299,7 +299,7 @@ public class AnomalyDetectionTaskTest {
 
   private void printIsolationForestNormalSummary(@NotNull List<Transaction> transactions) {
     int correct = 0, incorrect;
-    int numNormal = getNumClassVal("NORMAL");
+    int numNormal = getNumClassValInDataset("NORMAL");
 
     for (int i = 0; i < transactions.size(); i++) {
       Transaction transaction = transactions.get(i);
@@ -314,7 +314,7 @@ public class AnomalyDetectionTaskTest {
     printSummary("Normal Summary", correct, incorrect, numNormal);
   }
 
-  private int getNumClassVal(String classVal) {
+  private int getNumClassValInDataset(String classVal) {
     int num = 0;
 
     for (int i = 0; i < normalDataset.size(); i++) {

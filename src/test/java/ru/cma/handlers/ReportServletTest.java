@@ -1,7 +1,5 @@
 package ru.cma.handlers;
 
-import static org.junit.Assert.*;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
