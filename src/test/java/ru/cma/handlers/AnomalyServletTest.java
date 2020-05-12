@@ -23,16 +23,6 @@ public class AnomalyServletTest {
   }
 
   @Test
-  public void doGet() throws Exception {
-    String url = "http://localhost:8026/anomaly?date=07.05.2000";
-    HttpClient client = HttpClientBuilder.create().build();
-    HttpGet request = new HttpGet(url);
-
-    HttpResponse response = client.execute(request);
-    org.junit.Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-  }
-
-  @Test
   public void doPost() throws Exception {
     String url = "http://localhost:8026/anomaly";
     HttpClient client = HttpClientBuilder.create().build();
