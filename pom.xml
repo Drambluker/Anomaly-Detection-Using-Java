@@ -155,12 +155,6 @@
 
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>isolationForest</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>nz.ac.waikato.cms.weka</groupId>
             <artifactId>wekaDeeplearning4j</artifactId>
             <version>1.5.14</version>
         </dependency>
