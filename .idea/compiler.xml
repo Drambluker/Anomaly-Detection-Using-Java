@@ -7,11 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="AnomalyDetection" />
+        <module name="Anomaly-Detection-Using-Java" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Anomaly-Detection-Using-Java" options="-Xlint:none" />
       <module name="AnomalyDetection" options="-Xlint:none" />
     </option>
   </component>
