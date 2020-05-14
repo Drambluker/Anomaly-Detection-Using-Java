@@ -3,7 +3,6 @@ package ru.cma;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
-import org.example.handlers.MainServlet;
 import org.example.utils.PropertyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +38,7 @@ public class Main {
     ServletHandler handler = new ServletHandler();
     server.setHandler(handler);
 
-    handler.addServletWithMapping(MainServlet.class, "/anomaly");
+    handler.addServletWithMapping(AnomalyServlet.class, "/anomaly");
     handler.addServletWithMapping(ReportServlet.class, "/report");
 
     try {
